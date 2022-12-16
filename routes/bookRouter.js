@@ -19,6 +19,6 @@ router
   .route('/:id')
   .get(getSpecificBook)
   .patch(patchBook)
-  .delete(protect, restrictTo('admin', 'author'), deleteBook);
+  .delete(protect, restrictTo('admin'), deleteBook);
 
 module.exports = router;
