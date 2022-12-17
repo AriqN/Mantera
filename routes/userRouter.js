@@ -26,7 +26,12 @@ router.patch('/resetPassword/:token', resetPassword);
 router.patch('/updatePassword', protect, updatePassword);
 router.patch('/updateMe', protect, updateUser);
 router.patch('/readBook', protect, addBookToRead);
-router.patch('/updateProgress/:id', protect, updateUserReadingProgress);
+router.patch(
+  '/updateProgress/:id',
+  protect,
+  updateUserReadingProgress,
+  getSpecificUser
+);
 router.get('/myData', protect, getSpecificUser);
 router.delete('/deleteMe', protect, deleteUser);
 

@@ -46,7 +46,7 @@ const getSpecificUser = catchAsnyc(async (req, res, next) => {
   } else if (progress >= 2 * exp) {
     newLevel = level + 2;
   }
-  console.log(level, progress, exp, newLevel);
+  // console.log(level, progress, exp, newLevel);
   user.level = newLevel;
   await User.findByIdAndUpdate(
     req.user.id,
@@ -113,19 +113,20 @@ const addBookToRead = catchAsnyc(async (req, res, next) => {
   const findDuplicates = (arr) =>
     arr.filter((item, index) => arr.indexOf(item) !== index);
 
-  // console.log(allCurrentReadId);
   const duplicates = [...new Set(findDuplicates(allCurrentReadId))];
   if (duplicates.length > 0) {
     return next(new AppError('You are currently read this book!', 400));
   }
-  const currentReadPromises = allCurrentReadId.map(
+  const currentReadPromises = filteredInput.currentRead.map(
     async (id) => await Book.findById(id)
   );
   const newInput = await Promise.all(currentReadPromises);
-  user.currentRead = newInput;
+  const newReadingMaterial = [...user.currentRead, ...newInput];
+  user.currentRead = newReadingMaterial;
+  // console.log(allCurrentReadId, newReadingMaterial);
   await User.updateOne(
     { _id: user.id },
-    { $set: { currentRead: newInput } },
+    { $set: { currentRead: newReadingMaterial } },
     {
       new: true,
       runValidators: true,
@@ -150,10 +151,18 @@ const updateUserReadingProgress = catchAsnyc(async (req, res, next) => {
     { _id: req.user.id },
     { currentRead: { $elemMatch: { _id: req.params.id } } }
   );
+  // console.log(userBook.currentRead[0]);
+  if (userBook.currentRead[0] === undefined) {
+    return next(
+      new AppError(
+        'Data not found, please re-input the book to your reading material',
+        404
+      )
+    );
+  }
 
   const { pageRead, pages } = userBook.currentRead[0];
   const totalRead = pageRead + req.body.pageRead;
-  console.log(totalRead);
   if (totalRead > pages) {
     return next(
       new AppError(
@@ -167,12 +176,7 @@ const updateUserReadingProgress = catchAsnyc(async (req, res, next) => {
     { $set: { 'currentRead.$[elem].pageRead': totalRead } },
     { arrayFilters: [{ 'elem._id': req.params.id }] }
   );
-  res.status(200).json({
-    status: 'success',
-    data: {
-      totalRead,
-    },
-  });
+  next();
 });
 
 module.exports = {
