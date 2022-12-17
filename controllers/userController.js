@@ -1,4 +1,5 @@
 /* eslint-disable node/no-unsupported-features/es-syntax */
+
 const User = require('../models/userModel');
 const catchAsnyc = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
@@ -11,15 +12,7 @@ const filterObj = (obj, ...allowedFields) => {
   });
   return newObject;
 };
-// const filterArr = (obj, allowedFields) => {
-//   const newObject = {};
-//   // console.log(allowedFields);
-//   Object.keys(obj).forEach((el) => {
-//     console.log(Object.keys(obj));
-//     if (allowedFields.includes(el)) newObject[el] = obj[el];
-//   });
-//   return newObject;
-// };
+
 const getAllUsers = catchAsnyc(async (req, res, next) => {
   const users = await User.find();
   // console.log(req.requestTime);
@@ -39,12 +32,36 @@ const createUser = (req, res) => {
     message: 'this route not yet define',
   });
 };
-const getSpecificUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'this route not yet define',
+const getSpecificUser = catchAsnyc(async (req, res, next) => {
+  const user = await User.findById(req.user.id);
+  const { level } = user;
+  const exp = Math.round(0.5 * (level * 5) + 0.8 * (level * 9) + 200 * level);
+  const updateLevel = await user.currentRead.map((el) => el.pageRead * 1);
+  const progress = await updateLevel.reduce((a, b) => a + b);
+  let newLevel = null;
+  if (progress < exp) {
+    newLevel = level;
+  } else if (progress >= exp) {
+    newLevel = level + 1;
+  } else if (progress >= 2 * exp) {
+    newLevel = level + 2;
+  }
+  console.log(level, progress, exp, newLevel);
+  user.level = newLevel;
+  await User.findByIdAndUpdate(
+    req.user.id,
+    { level: newLevel },
+    {
+      new: true,
+      runValidators: true,
+    }
+  );
+
+  await res.status(200).json({
+    status: 'success',
+    data: user,
   });
-};
+});
 
 const updateUser = catchAsnyc(async (req, res, next) => {
   if (req.body.password || req.body.passwordConfirm) {
@@ -122,6 +139,42 @@ const addBookToRead = catchAsnyc(async (req, res, next) => {
   });
 });
 
+const updateUserReadingProgress = catchAsnyc(async (req, res, next) => {
+  const filteredInput = filterObj(req.body, 'pageRead');
+  if (Object.values(filteredInput).length === 0) {
+    return next(
+      new AppError('You do not have permisson to update this data', 401)
+    );
+  }
+  const userBook = await User.findOne(
+    { _id: req.user.id },
+    { currentRead: { $elemMatch: { _id: req.params.id } } }
+  );
+
+  const { pageRead, pages } = userBook.currentRead[0];
+  const totalRead = pageRead + req.body.pageRead;
+  console.log(totalRead);
+  if (totalRead > pages) {
+    return next(
+      new AppError(
+        'Your reading progress exceed the max pages, please input the right number',
+        400
+      )
+    );
+  }
+  await User.findOneAndUpdate(
+    { _id: req.user.id },
+    { $set: { 'currentRead.$[elem].pageRead': totalRead } },
+    { arrayFilters: [{ 'elem._id': req.params.id }] }
+  );
+  res.status(200).json({
+    status: 'success',
+    data: {
+      totalRead,
+    },
+  });
+});
+
 module.exports = {
   getAllUsers,
   getSpecificUser,
@@ -129,4 +182,5 @@ module.exports = {
   deleteUser,
   updateUser,
   addBookToRead,
+  updateUserReadingProgress,
 };

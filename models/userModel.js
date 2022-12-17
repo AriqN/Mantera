@@ -14,7 +14,6 @@ const userSchema = new mongoose.Schema(
       trim: true,
       maxlength: [20, 'User name must have less or equal then 20 characters'],
       minlength: [3, 'User name must have more or equal then 3 characters'],
-      // validate: [validator.isAlpha, 'tourName must only contain letter'],
     },
     email: {
       type: String,
@@ -25,6 +24,10 @@ const userSchema = new mongoose.Schema(
     },
     photo: {
       type: String,
+    },
+    level: {
+      type: Number,
+      default: 1,
     },
     role: {
       type: String,
@@ -90,14 +93,6 @@ userSchema.pre('save', function (next) {
   this.passwordChangedAt = Date.now() - 1000;
   next();
 });
-// userSchema.pre('updateOne', async function (next) {
-//   console.log(this.currentRead);
-//   const currentReadPromises = this.currentRead.map(
-//     async (id) => await Book.findById(id)
-//   );
-//   this.currentRead = await Promise.all(currentReadPromises);
-//   next();
-// });
 
 userSchema.pre(/^find/, function (next) {
   this.find({ active: true });
