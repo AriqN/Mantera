@@ -45,6 +45,8 @@ const getSpecificUser = catchAsnyc(async (req, res, next) => {
     newLevel = level + 1;
   } else if (progress >= 2 * exp) {
     newLevel = level + 2;
+  } else if (progress >= 3 * exp) {
+    newLevel = level + 3;
   }
   // console.log(level, progress, exp, newLevel);
   user.level = newLevel;
