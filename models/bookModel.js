@@ -111,11 +111,11 @@ bookSchema.pre(/^find/, function (next) {
   next();
 });
 
-bookSchema.post(/^find/, function (docs, next) {
-  console.log(`Query took ${Date.now() - this.start} milliseconds`);
-  // console.log(docs);
-  next();
-});
+// bookSchema.post(/^find/, function (docs, next) {
+//   console.log(`Query took ${Date.now() - this.start} milliseconds`);
+//   // console.log(docs);
+//   next();
+// });
 
 // Aggregation Middleware
 bookSchema.pre('aggregate', function (next) {

@@ -124,7 +124,7 @@ const addBookToRead = catchAsnyc(async (req, res, next) => {
   );
   const newInput = await Promise.all(currentReadPromises);
   newInput[0].startDates = Date.now();
-  console.log(newInput);
+  // console.log(newInput);
   const newReadingMaterial = [...user.currentRead, ...newInput];
   user.currentRead = newReadingMaterial;
 
