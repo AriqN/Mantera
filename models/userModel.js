@@ -72,6 +72,9 @@ const userSchema = new mongoose.Schema(
         },
         pages: Number,
         pageRead: Number,
+        startDates: {
+          type: Date,
+        },
       },
     ],
   },

@@ -123,9 +123,11 @@ const addBookToRead = catchAsnyc(async (req, res, next) => {
     async (id) => await Book.findById(id)
   );
   const newInput = await Promise.all(currentReadPromises);
+  newInput[0].startDates = Date.now();
+  console.log(newInput);
   const newReadingMaterial = [...user.currentRead, ...newInput];
   user.currentRead = newReadingMaterial;
-  // console.log(allCurrentReadId, newReadingMaterial);
+
   await User.updateOne(
     { _id: user.id },
     { $set: { currentRead: newReadingMaterial } },

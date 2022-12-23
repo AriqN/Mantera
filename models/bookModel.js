@@ -69,17 +69,19 @@ const bookSchema = new mongoose.Schema(
     imageCover: {
       type: String,
       required: [true, 'Book must have a cover image'],
+      default:
+        'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2940&q=80',
     },
-    images: {
-      type: [String],
-    },
+    // images: {
+    //   type: [String],
+    // },
     createdAt: {
       type: Date,
       default: Date.now(),
       select: false,
     },
     startDates: {
-      type: [Date],
+      type: Date,
     },
     secretBook: {
       type: Boolean,
