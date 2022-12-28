@@ -29,7 +29,8 @@ app.use(xss());
 
 app.use(
   hpp({
-    whitelist: ['genre', 'ratingsAverage', 'ratingsQuantity', 'pages'],
+    // whitelist: ['genre', 'ratingsAverage', 'ratingsQuantity', 'pages'],
+    whitelist: ['genre', 'pages'],
   })
 );
 app.use(express.json());

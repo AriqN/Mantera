@@ -10,8 +10,8 @@ const AppError = require('../utils/appError');
 
 const aliasTopBooks = async (req, res, next) => {
   req.query.limit = '5';
-  req.query.sort = 'price,-ratingsAverage';
-  req.query.fields = 'name,price,ratingsAverage,summary,difficulty';
+  req.query.sort = 'pages';
+  req.query.fields = 'name,pages,summary,genre';
   next();
 };
 
@@ -97,8 +97,8 @@ const getBookStats = catchAsnyc(async (req, res, next) => {
       $group: {
         _id: { $toUpper: '$genre' },
         num: { $sum: 1 },
-        numRatings: { $sum: '$ratingsQuantity' },
-        avgRating: { $avg: '$ratingsAverage' },
+        // numRatings: { $sum: '$ratingsQuantity' },
+        // avgRating: { $avg: '$ratingsAverage' },
         avgPages: { $avg: '$pages' },
         minPages: { $min: '$pages' },
         maxPages: { $max: '$pages' },
@@ -107,7 +107,8 @@ const getBookStats = catchAsnyc(async (req, res, next) => {
     },
     {
       $sort: {
-        avgRatings: -1,
+        // avgRatings: -1,
+        avgPages: -1,
       },
     },
     // {

@@ -10,22 +10,22 @@ const bookSchema = new mongoose.Schema(
       unique: true,
       trim: true,
       maxlength: [40, 'Book name must have less or equal then 40 characters'],
-      minlength: [10, 'Book name must have more or equal then 10 characters'],
+      minlength: [3, 'Book name must have more or equal then 3 characters'],
       // validate: [validator.isAlpha, 'BookName must only contain letter'],
     },
     slug: {
       type: String,
     },
-    ratingsAverage: {
-      type: Number,
-      default: 5,
-      min: [1, 'Rating must be above or equal to 1.0'],
-      max: [5, 'Rating must be below or equal to 5.0'],
-    },
-    ratingsQuantity: {
-      type: Number,
-      default: 0,
-    },
+    // ratingsAverage: {
+    //   type: Number,
+    //   default: 5,
+    //   min: [1, 'Rating must be above or equal to 1.0'],
+    //   max: [5, 'Rating must be below or equal to 5.0'],
+    // },
+    // ratingsQuantity: {
+    //   type: Number,
+    //   default: 0,
+    // },
     pages: {
       type: Number,
       required: [true, 'Book must have a page'],
@@ -57,14 +57,15 @@ const bookSchema = new mongoose.Schema(
           'genre is either romance, horror, action, thriller, comedy, cartoon, others',
       },
     },
-    summary: {
-      type: String,
-      trim: true,
-      required: true,
-    },
+    // summary: {
+    //   type: String,
+    //   trim: true,
+    //   required: true,
+    // },
     description: {
       type: String,
       trim: true,
+      required: true,
     },
     imageCover: {
       type: String,
