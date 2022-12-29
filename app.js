@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 const limiter = rateLimit({
-  max: 100,
+  max: 1000,
   windowMs: 60 * 60 * 1000,
   message: 'too many request from this IP, please try again in an hour',
 });
