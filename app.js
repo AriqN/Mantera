@@ -14,8 +14,8 @@ const userRouter = require('./routes/userRouter');
 const bookRouter = require('./routes/bookRouter');
 const defaultRouter = require('./routes/defaultRouter');
 
-app.use(cors());
-app.options('*', cors());
+// app.use(cors());
+app.use(cors({ credentials: true, origin: 'http://localhost:3000' }));
 app.use(helmet());
 
 if (process.env.NODE_ENV === 'development') {
