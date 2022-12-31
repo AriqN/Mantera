@@ -7,13 +7,17 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 
 const app = express();
+const cors = require('cors');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const userRouter = require('./routes/userRouter');
 const bookRouter = require('./routes/bookRouter');
 const defaultRouter = require('./routes/defaultRouter');
 
+app.use(cors());
+app.options('*', cors());
 app.use(helmet());
+
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
