@@ -37,7 +37,7 @@ const getSpecificUser = catchAsnyc(async (req, res, next) => {
   const { level } = user;
   const exp = Math.round(0.5 * (level * 5) + 0.8 * (level * 9) + 200 * level);
   const updateLevel = await user.currentRead.map((el) => el.pageRead * 1);
-  const progress = await updateLevel.reduce((a, b) => a + b);
+  const progress = await updateLevel.reduce((a, b) => a + b, 0);
   let newLevel = null;
   if (progress < exp) {
     newLevel = level;
