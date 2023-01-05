@@ -18,7 +18,7 @@ const defaultRouter = require('./routes/defaultRouter');
 app.use(
   cors({
     credentials: true,
-    origin: 'http://localhost:3000',
+    origin: ['http://localhost:3000', 'http://3.0.101.78:3000'],
     exposedHeaders: 'Set-Cookie',
   })
 );
